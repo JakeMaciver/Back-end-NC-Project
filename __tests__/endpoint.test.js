@@ -128,7 +128,6 @@ describe('GET /api/reviews', () => {
 			.expect(200)
 			.then(({ body }) => {
 				const { reviews } = body;
-        console.log(reviews);
         const reviewsCopy = [...reviews];
         const sortedReviews = reviewsCopy.sort((a,b) => {
           return b.created_at.localeCompare(a.created_at)
