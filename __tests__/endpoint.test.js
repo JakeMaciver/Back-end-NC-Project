@@ -87,3 +87,55 @@ describe('GET /api/reviews/:review_id', () => {
     })
   });
 });
+
+describe('GET /api/reviews', () => {
+	test('should return a status code 200', () => {
+		return request(app).get('/api/reviews').expect(200);
+	});
+	test('200: return an object', () => {
+		return request(app)
+			.get('/api/reviews')
+			.then(({ body }) => {
+				expect(typeof body).toBe('object');
+				expect(Array.isArray(body)).toBe(false);
+			});
+	});
+	test('200: should return an array of review objects containing the correct properties', () => {
+		return request(app)
+			.get('/api/reviews')
+			.expect(200)
+			.then(({ body }) => {
+				const { reviews } = body;
+				expect(reviews).toHaveLength(13);
+				reviews.forEach((review) => {
+					expect(review).toMatchObject({
+						owner: expect.any(String),
+						title: expect.any(String),
+						review_id: expect.any(Number),
+						category: expect.any(String),
+						review_img_url: expect.any(String),
+						created_at: expect.any(String),
+						votes: expect.any(Number),
+						designer: expect.any(String),
+						comment_count: expect.any(String),
+					});
+				});
+			});
+	});
+	test('200: should return an array of objects that is sorted by the value of the date property in descending order', () => {
+		return request(app)
+			.get('/api/reviews')
+			.expect(200)
+			.then(({ body }) => {
+				const { reviews } = body;
+        const reviewsCopy = [...reviews];
+        const sortedReviews = reviewsCopy.sort((a,b) => {
+          return b.created_at.localeCompare(a.created_at)
+        });
+        expect(reviews).toEqual(sortedReviews);	        
+			});
+	});
+  test('404: should return an error 404 when the user has entered an invalid endpoint', () => {
+    return request(app).get('/api/revie').expect(404)
+  });
+});
