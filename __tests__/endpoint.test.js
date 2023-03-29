@@ -204,7 +204,7 @@ describe('GET /api/reviews/:review_id/comments', () => {
   });
 });
 
-describe.only('POST /api/reviews/:review_id/comments', () => {
+describe('POST /api/reviews/:review_id/comments', () => {
   test('should return with status code 201', () => {
 		const commentToPost = { username: 'bainesface', body: 'Game was great' };
 		return request(app)
