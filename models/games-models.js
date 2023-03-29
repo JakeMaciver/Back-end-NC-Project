@@ -1,4 +1,5 @@
 const db = require('../db/connection');
+const {checkExists} = require('../db/seeds/utils');
 
 const selectCategories = () => {
   const selectCategoriesQuery = `
@@ -30,4 +31,18 @@ const selectReviews = () => {
 	return db.query(selectReviewsQuery).then(({ rows }) => rows);
 };
 
-module.exports = { selectCategories, selectReviewByID, selectReviews };
+const selectCommentsByReviewId = async (review_id) => {
+  const reviewIdExists = await checkExists('reviews', 'review_id', review_id);
+
+  const selectCommentsByReviewIdQuery = `
+  SELECT * FROM comments
+  WHERE review_id = $1
+  ORDER BY created_at DESC;
+  `
+
+  const {rows} = await db.query(selectCommentsByReviewIdQuery, [review_id]);
+  if (!rows.length && reviewIdExists === false) return Promise.reject({status: 404});
+  return rows;
+}
+
+module.exports = { selectCategories, selectReviewByID, selectReviews, selectCommentsByReviewId };

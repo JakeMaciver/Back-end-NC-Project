@@ -139,3 +139,63 @@ describe('GET /api/reviews', () => {
     return request(app).get('/api/revie').expect(404)
   });
 });
+
+describe('GET /api/reviews/:review_id/comments', () => {
+	test('should return with a status code of 200', () => {
+		return request(app).get('/api/reviews/2/comments').expect(200);
+	});
+	test('200: return an object', () => {
+		return request(app)
+			.get('/api/reviews/2/comments')
+			.then(({ body }) => {
+				expect(typeof body).toBe('object');
+				expect(Array.isArray(body)).toBe(false);
+			});
+	});
+	test('200: should return an array of comments object that have the review_id of 2', () => {
+		return request(app)
+			.get('/api/reviews/2/comments')
+			.expect(200)
+			.then(({ body }) => {
+				const { comments } = body;
+				expect(comments).toHaveLength(3);
+				comments.forEach((comment) => {
+					expect(comment).toEqual({
+						comment_id: expect.any(Number),
+						votes: expect.any(Number),
+						created_at: expect.any(String),
+						author: expect.any(String),
+						body: expect.any(String),
+						review_id: 2,
+					});
+				});
+			});
+	});
+	test('200: should return comments objects array in order sorted by date DESC', () => {
+		return request(app)
+			.get('/api/reviews/2/comments')
+			.expect(200)
+			.then(({ body }) => {
+				const { comments } = body;
+				expect(comments).toBeSortedBy('created_at', { descending: true });
+			});
+	});
+	test('200: should return 200 and an empty array when review_id exists but no comments', () => {
+		return request(app)
+			.get('/api/reviews/6/comments')
+			.expect(200)
+			.then(({ body }) => {
+				const { comments } = body;
+				expect(comments).toEqual([]);
+			});
+	});
+	test('404: should return a 404 not found error when review_id does not exist', () => {
+		return request(app)
+			.get('/api/reviews/999/comments')
+			.expect(404)
+			.then(({ body }) => {
+				console.log(body);
+				expect(body).toEqual({ message: 'Not found' });
+			});
+	});
+});

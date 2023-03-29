@@ -2,6 +2,7 @@ const {
 	selectCategories,
 	selectReviewByID,
 	selectReviews,
+  selectCommentsByReviewId
 } = require('../models/games-models');
 
 const getCategories = (req, res, next) => {
@@ -30,4 +31,16 @@ const getReviews = (req, res, next) => {
 		.catch((err) => next(err));
 };
 
-module.exports = { getCategories, getReviewByID, getReviews };
+const getCommentsbyReviewId = (req, res, next) => {
+	const { review_id } = req.params;
+	selectCommentsByReviewId(review_id)
+		.then((comments) => res.status(200).send({ comments: comments }))
+		.catch((err) => next(err));
+};
+
+module.exports = {
+	getCategories,
+	getReviewByID,
+	getReviews,
+	getCommentsbyReviewId,
+};
