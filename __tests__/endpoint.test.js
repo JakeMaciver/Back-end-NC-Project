@@ -203,3 +203,59 @@ describe('GET /api/reviews/:review_id/comments', () => {
     })
   });
 });
+
+describe.only('POST /api/reviews/:review_id/comments', () => {
+  test('should return with status code 201', () => {
+		const commentToPost = { username: 'bainesface', body: 'Game was great' };
+		return request(app)
+			.post('/api/reviews/3/comments')
+			.send(commentToPost)
+			.expect(201);
+	});
+	test('200: return an object', () => {
+		return request(app)
+			.post('/api/reviews/2/comments')
+			.then(({ body }) => {
+				expect(typeof body).toBe('object');
+				expect(Array.isArray(body)).toBe(false);
+			});
+	});
+	test('200: should return with the comment that was posted to the database', () => {
+		const commentToPost = { username: 'bainesface', body: 'Game was great' };
+		return request(app)
+			.post('/api/reviews/3/comments')
+			.send(commentToPost)
+			.expect(201)
+      .then(({body}) => {
+        const {comment} = body;
+        expect(comment[0]).toMatchObject({
+					comment_id: 7,
+					body: 'Game was great',
+					votes: 0,
+					author: 'bainesface',
+					review_id: 3,
+					created_at: expect.any(String),
+				});
+      })
+	});
+  test('404: should return a 404 not found error when review_id does not exist', () => {
+    const commentToPost = { username: 'bainesface', body: 'Game was great' };
+		return request(app)
+			.post('/api/reviews/999/comments')
+      .send(commentToPost)
+			.expect(404)
+			.then(({ body }) => {
+				expect(body).toEqual({ message: 'Not found' });
+			});
+	});
+  test('400: should return a 400 Bad request error when invalid user input', () => {
+    const commentToPost = {username: '', body: 'Game was great' };
+    return request(app)
+			.post('/api/reviews/3/comments')
+			.send(commentToPost)
+			.expect(400)
+			.then(({ body }) => {
+				expect(body).toEqual({ message: 'Bad request' });
+			});
+  });
+});

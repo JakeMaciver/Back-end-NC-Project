@@ -1,6 +1,6 @@
 
 const handle400statusErrors = (err, req, res, next) => {
-  if (err.code === '22P02') res.status(400).send({message: 'Bad request'}); 
+  if (err.code === '22P02' || err.status === 400) res.status(400).send({message: 'Bad request'}); 
   next(err);
 }
 

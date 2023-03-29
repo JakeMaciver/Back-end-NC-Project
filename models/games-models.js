@@ -45,4 +45,34 @@ const selectCommentsByReviewId = async (review_id) => {
   return rows;
 }
 
-module.exports = { selectCategories, selectReviewByID, selectReviews, selectCommentsByReviewId };
+const insertCommentById = async (review_id, commentData) => {
+	const reviewExists = await checkExists('reviews', 'review_id', review_id)
+
+  if(reviewExists === false) return Promise.reject({ status: 404 });
+  if(commentData.username === '' || commentData.body === '') return Promise.reject({ status: 400 });
+
+	const insertCommentsQueryStr = `
+  INSERT INTO comments
+  (body, review_id, author, votes)
+  VALUES
+  ($1, $2, $3, $4)
+  RETURNING *;
+  `;
+
+  const { rows } = await db.query(insertCommentsQueryStr, [
+		commentData.body,
+		review_id,
+		commentData.username,
+		0,
+	]);
+
+  return rows;
+};
+
+module.exports = {
+	selectCategories,
+	selectReviewByID,
+	selectReviews,
+	selectCommentsByReviewId,
+	insertCommentById,
+};
