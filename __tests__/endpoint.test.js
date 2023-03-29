@@ -212,7 +212,7 @@ describe('POST /api/reviews/:review_id/comments', () => {
 			.send(commentToPost)
 			.expect(201);
 	});
-	test('200: return an object', () => {
+	test('201: return an object', () => {
 		return request(app)
 			.post('/api/reviews/2/comments')
 			.then(({ body }) => {
@@ -220,7 +220,7 @@ describe('POST /api/reviews/:review_id/comments', () => {
 				expect(Array.isArray(body)).toBe(false);
 			});
 	});
-	test('200: should return with the comment that was posted to the database', () => {
+	test('201: should return with the comment that was posted to the database', () => {
 		const commentToPost = { username: 'bainesface', body: 'Game was great' };
 		return request(app)
 			.post('/api/reviews/3/comments')
@@ -256,6 +256,22 @@ describe('POST /api/reviews/:review_id/comments', () => {
 			.expect(400)
 			.then(({ body }) => {
 				expect(body).toEqual({ message: 'Bad request' });
+			});
+  });
+  test('400: should return a 400 Bad Request when missing required input fields', () => {
+    const commentToPost = {body: 'Game was great' };
+    return request(app).post('/api/reviews/3/comments').send(commentToPost).expect(400).then(({body}) => {
+      expect(body).toEqual({ message: 'Bad request' });
+    })
+  });
+  test('404: should return 404 error Not found if username does not exist', () => {
+    const commentToPost = { username: 'Jake', body: 'Game was great' };
+		return request(app)
+			.post('/api/reviews/3/comments')
+			.send(commentToPost)
+			.expect(404)
+			.then(({ body }) => {
+				expect(body).toEqual({ message: 'Not found' });
 			});
   });
 });

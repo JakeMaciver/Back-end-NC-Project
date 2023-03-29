@@ -47,9 +47,17 @@ const selectCommentsByReviewId = async (review_id) => {
 
 const insertCommentById = async (review_id, commentData) => {
 	const reviewExists = await checkExists('reviews', 'review_id', review_id)
+  const usernameExists = await checkExists('users', 'username', commentData.username);
 
+  if (
+		commentData.username === '' ||
+		commentData.body === '' ||
+		!commentData.username ||
+		!commentData.body
+	)
+		return Promise.reject({ status: 400 });
+  if(usernameExists === false) return Promise.reject({status: 404});
   if(reviewExists === false) return Promise.reject({ status: 404 });
-  if(commentData.username === '' || commentData.body === '') return Promise.reject({ status: 400 });
 
 	const insertCommentsQueryStr = `
   INSERT INTO comments
