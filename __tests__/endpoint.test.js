@@ -194,7 +194,6 @@ describe('GET /api/reviews/:review_id/comments', () => {
 			.get('/api/reviews/999/comments')
 			.expect(404)
 			.then(({ body }) => {
-				console.log(body);
 				expect(body).toEqual({ message: 'Not found' });
 			});
 	});
