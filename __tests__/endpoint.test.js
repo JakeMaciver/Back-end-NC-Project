@@ -197,4 +197,9 @@ describe('GET /api/reviews/:review_id/comments', () => {
 				expect(body).toEqual({ message: 'Not found' });
 			});
 	});
+  test('400: should return a 400 error due to invalid user input', () => {
+    return request(app).get('/api/reviews/hello/comments').expect(400).then(({body}) => {
+      expect(body).toEqual({message: 'Bad request'})
+    })
+  });
 });
