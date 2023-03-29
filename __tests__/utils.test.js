@@ -2,7 +2,8 @@ const {
 	convertTimestampToDate,
 	createRef,
 	formatComments,
-} = require("../db/seeds/utils");
+	checkExists,
+} = require('../db/seeds/utils');
 
 describe("convertTimestampToDate", () => {
 	test("returns a new object", () => {
@@ -100,5 +101,24 @@ describe("formatComments", () => {
 		const comments = [{ created_at: timestamp }];
 		const formattedComments = formatComments(comments, {});
 		expect(formattedComments[0].created_at).toEqual(new Date(timestamp));
+	});
+});
+
+describe('checkExists', () => {
+	test('should return a boolean', () => {
+		const table = 'reviews';
+		const column = 'review_id';
+		const value = 34;
+		return checkExists(table, column, value).then((result) => {
+			expect(typeof result).toBe('boolean');
+		});
+	});
+	test('404: returns a 404 error not found when value does not exist in column in the table', () => {
+		const table = 'reviews';
+		const column = 'review_id';
+		const value = 34;
+		return checkExists(table, column, value).then((result) => {
+			expect(result).toBe(false);
+		});
 	});
 });
