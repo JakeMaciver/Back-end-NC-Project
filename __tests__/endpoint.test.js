@@ -346,3 +346,45 @@ describe('Patch /api/reviews/:review_id changing votes', () => {
 				.expect(400);
     });
 });
+
+describe('Delete /api/comments/:comment_id', () => {
+  test('should return with status code 204', () => {
+    return request(app).delete('/api/comments/1').expect(204);
+  });
+	test('204: should return No content if the comment has been deleted', () => {
+		return request(app)
+			.get('/api/reviews/2/comments')
+			.expect(200)
+			.then(({ body }) => {
+				const { comments } = body;
+        let count = 0;
+				comments.forEach((comment) => {
+          if (comment.comment_id === 1) count++;
+				});
+        expect(count).toBe(1);
+			})
+			.then(() => {
+				return request(app)
+					.delete('/api/comments/1')
+					.expect(204)
+					.then(() => {
+						return request(app)
+							.get('/api/reviews/2/comments')
+							.expect(200)
+							.then(({ body }) => {
+								const {comments} = body;
+                comments.forEach(comment => {
+                  expect(comment.comment_id !== 1).toBe(true);
+                })
+							});
+					});
+			});
+	});
+  test('404: should return error 404 Not found if user enters a comment_id that does not exist', () => {
+    return request(app).delete('/api/comments/99999').expect(404);
+  });
+  test('400: should return 400 error if use inputs an invalid comment_id', () => {
+    return request(app).delete('/api/comments/not_a_num').expect(400);
+  });
+
+});

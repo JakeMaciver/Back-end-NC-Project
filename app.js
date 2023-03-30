@@ -6,6 +6,7 @@ const {
 	getCommentsbyReviewId,
 	postCommentById,
 	patchReview,
+  deleteComment
 } = require('./controllers/games-controllers');
 const {handle500statusErrors, handle404statusErrors, handle400statusErrors} = require('./controllers/error-handling-controllers');
 
@@ -21,6 +22,8 @@ app.get('/api/reviews/:review_id/comments', getCommentsbyReviewId);
 app.post('/api/reviews/:review_id/comments', postCommentById);
 
 app.patch('/api/reviews/:review_id', patchReview);
+
+app.delete('/api/comments/:comment_id', deleteComment);
 
 app.use(handle400statusErrors);
 app.use(handle404statusErrors);

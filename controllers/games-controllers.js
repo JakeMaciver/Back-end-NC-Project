@@ -4,7 +4,8 @@ const {
 	selectReviews,
   selectCommentsByReviewId,
   insertCommentById,
-  updateReview
+  updateReview,
+  removeCommentById
 } = require('../models/games-models');
 
 const getCategories = (req, res, next) => {
@@ -37,7 +38,8 @@ const getCommentsbyReviewId = (req, res, next) => {
 	const { review_id } = req.params;
 	selectCommentsByReviewId(review_id)
 		.then((comments) => res.status(200).send({ comments: comments }))
-		.catch((err) => next(err));
+		.catch((err) => {
+      next(err)});
 };
 
 const postCommentById = (req, res, next) => {
@@ -67,6 +69,16 @@ const patchReview = (req, res, next) => {
 		});
 };
 
+const deleteComment = (req, res, next) => {
+	const { comment_id } = req.params;
+	removeCommentById(comment_id)
+		.then((comment) => {
+      res.status(204).send({comment});
+    })
+		.catch((err) => {
+      next(err)});
+};
+
 module.exports = {
 	getCategories,
 	getReviewByID,
@@ -74,4 +86,5 @@ module.exports = {
 	getCommentsbyReviewId,
 	postCommentById,
 	patchReview,
+	deleteComment,
 };
