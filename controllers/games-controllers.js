@@ -3,7 +3,8 @@ const {
 	selectReviewByID,
 	selectReviews,
   selectCommentsByReviewId,
-  insertCommentById
+  insertCommentById,
+  updateReview
 } = require('../models/games-models');
 
 const getCategories = (req, res, next) => {
@@ -52,10 +53,25 @@ const postCommentById = (req, res, next) => {
 		});
 };
 
+const patchReview = (req, res, next) => {
+	let { review_id } = req.params;
+	const { body } = req;
+  review_id = parseInt(review_id);
+
+	updateReview(review_id, body)
+		.then((review) => {
+			res.status(200).send({ review: review });
+		})
+		.catch((err) => {
+			next(err);
+		});
+};
+
 module.exports = {
 	getCategories,
 	getReviewByID,
 	getReviews,
 	getCommentsbyReviewId,
 	postCommentById,
+	patchReview,
 };
