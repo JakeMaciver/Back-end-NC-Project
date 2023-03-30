@@ -277,7 +277,7 @@ describe('POST /api/reviews/:review_id/comments', () => {
 });
 
 describe('Patch /api/reviews/:review_id changing votes', () => {
-    test('should return with status code 201', () => {
+    test('should return with status code 200', () => {
 			const incrementVotesBy = { inc_votes : 10};
 			return request(app)
 				.patch('/api/reviews/3')
@@ -337,5 +337,12 @@ describe('Patch /api/reviews/:review_id changing votes', () => {
 				.patch('/api/reviews/999')
 				.send(incrementVotesBy)
 				.expect(404);
+    });
+    test('400: return error 400 when the review id entered is the wrong data type', () => {
+      const incrementVotesBy = { inc_votes: 10 };
+			return request(app)
+				.patch('/api/reviews/cat')
+				.send(incrementVotesBy)
+				.expect(400);
     });
 });

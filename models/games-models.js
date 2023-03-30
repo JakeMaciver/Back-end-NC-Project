@@ -79,20 +79,27 @@ const insertCommentById = async (review_id, commentData) => {
 
 const updateReview = async (review_id, body) => {
   const {inc_votes} = body;
+  review_id = parseInt(review_id);
 
-  const reviewIdExists = await checkExists('reviews', 'review_id', review_id);
-  if(!reviewIdExists) return Promise.reject({status: 404});
-  if(!body.inc_votes || typeof body.inc_votes !== 'number' ) return Promise.reject({status: 400});
+	const reviewIdExists = await checkExists('reviews', 'review_id', review_id);
 
-  const updateReviewQuery = `
+	if (
+		!body.inc_votes ||
+		typeof body.inc_votes !== 'number' ||
+		(isNaN(review_id))
+	)
+		return Promise.reject({ status: 400 });
+	if (!reviewIdExists) return Promise.reject({ status: 404 });
+
+	const updateReviewQuery = `
   UPDATE reviews
   SET votes = votes + $1
   WHERE review_id = $2
   RETURNING *;
-  `
-  const {rows} = await db.query(updateReviewQuery, [inc_votes, review_id]);
-  console.log(rows);
-  return rows;
+  `;
+
+	const { rows } = await db.query(updateReviewQuery, [inc_votes, review_id]);
+	return rows;
 }
 
 module.exports = {

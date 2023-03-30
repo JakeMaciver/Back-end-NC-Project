@@ -54,8 +54,10 @@ const postCommentById = (req, res, next) => {
 };
 
 const patchReview = (req, res, next) => {
-	const { review_id } = req.params;
+	let { review_id } = req.params;
 	const { body } = req;
+  review_id = parseInt(review_id);
+
 	updateReview(review_id, body)
 		.then((review) => {
 			res.status(200).send({ review: review });
