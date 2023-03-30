@@ -77,10 +77,29 @@ const insertCommentById = async (review_id, commentData) => {
   return rows;
 };
 
+const updateReview = async (review_id, body) => {
+  const {inc_votes} = body;
+
+  const reviewIdExists = await checkExists('reviews', 'review_id', review_id);
+  if(!reviewIdExists) return Promise.reject({status: 404});
+  if(!body.inc_votes || typeof body.inc_votes !== 'number' ) return Promise.reject({status: 400});
+
+  const updateReviewQuery = `
+  UPDATE reviews
+  SET votes = votes + $1
+  WHERE review_id = $2
+  RETURNING *;
+  `
+  const {rows} = await db.query(updateReviewQuery, [inc_votes, review_id]);
+  console.log(rows);
+  return rows;
+}
+
 module.exports = {
 	selectCategories,
 	selectReviewByID,
 	selectReviews,
 	selectCommentsByReviewId,
 	insertCommentById,
+  updateReview
 };

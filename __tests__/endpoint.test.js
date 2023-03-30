@@ -275,3 +275,67 @@ describe('POST /api/reviews/:review_id/comments', () => {
 			});
   });
 });
+
+describe('Patch /api/reviews/:review_id changing votes', () => {
+    test('should return with status code 201', () => {
+			const incrementVotesBy = { inc_votes : 10};
+			return request(app)
+				.patch('/api/reviews/3')
+				.send(incrementVotesBy)
+				.expect(200);
+		});
+    test('200: should return an object', () => {
+      const incrementVotesBy = { inc_votes: 10 };
+			return request(app)
+				.patch('/api/reviews/3')
+				.send(incrementVotesBy)
+				.expect(200)
+        .then(({body}) => {
+          expect(typeof body).toBe('object');
+					expect(Array.isArray(body)).toBe(false);
+        })
+    });
+    test('200: should return the updated review object', () => {
+      const incrementVotesBy = { inc_votes: 10 };
+			return request(app)
+				.patch('/api/reviews/3')
+				.send(incrementVotesBy)
+				.expect(200)
+				.then(({ body }) => {
+					const {review} = body;
+          expect(review[0]).toHaveProperty('votes', 15)
+				});
+    });
+    test('200: should also work for applying negative votes', () => {
+      const incrementVotesBy = { inc_votes: -10 };
+			return request(app)
+				.patch('/api/reviews/3')
+				.send(incrementVotesBy)
+				.expect(200)
+				.then(({ body }) => {
+					const { review } = body;
+					expect(review[0]).toHaveProperty('votes', -5);
+				});
+    });
+    test('400: return error 400 Bad request when trying to send a malformed body / missing required property', () => {
+      const incrementVotesBy = {};
+			return request(app)
+				.patch('/api/reviews/3')
+				.send(incrementVotesBy)
+				.expect(400)
+    });
+    test('400: return Bad request when trying to send data with an incorrect type that cant be processed', () => {
+      const incrementVotesBy = {inc_votes: 'cat'};
+			return request(app)
+				.patch('/api/reviews/3')
+				.send(incrementVotesBy)
+				.expect(400);
+    });
+    test('404: return a 404 error Not found if the review_id does not exist', () => {
+      const incrementVotesBy = { inc_votes: 10 };
+			return request(app)
+				.patch('/api/reviews/999')
+				.send(incrementVotesBy)
+				.expect(404);
+    });
+});
