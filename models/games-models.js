@@ -121,6 +121,16 @@ const removeCommentById = async (comment_id) => {
 
 }
 
+const selectUsers = async () => {
+  console.log('hi');
+  const selectUsersQuery = `
+  SELECT * FROM users;
+  `
+
+  const {rows} = await db.query(selectUsersQuery);
+  return rows;
+}
+
 module.exports = {
 	selectCategories,
 	selectReviewByID,
@@ -128,5 +138,6 @@ module.exports = {
 	selectCommentsByReviewId,
 	insertCommentById,
   updateReview,
-  removeCommentById
+  removeCommentById,
+  selectUsers
 };

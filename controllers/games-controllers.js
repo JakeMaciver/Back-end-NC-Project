@@ -1,3 +1,4 @@
+const users = require('../db/data/test-data/users');
 const {
 	selectCategories,
 	selectReviewByID,
@@ -5,7 +6,8 @@ const {
   selectCommentsByReviewId,
   insertCommentById,
   updateReview,
-  removeCommentById
+  removeCommentById,
+  selectUsers
 } = require('../models/games-models');
 
 const getCategories = (req, res, next) => {
@@ -73,11 +75,17 @@ const deleteComment = (req, res, next) => {
 	const { comment_id } = req.params;
 	removeCommentById(comment_id)
 		.then((comment) => {
-      res.status(204).send({comment});
+      res.status(204).send();
     })
 		.catch((err) => {
       next(err)});
 };
+
+const getUsers = (req, res, next) => {
+  selectUsers().then((users) => {
+    res.status(200).send({users : users})
+  }).catch(err => next(err));
+}
 
 module.exports = {
 	getCategories,
@@ -87,4 +95,5 @@ module.exports = {
 	postCommentById,
 	patchReview,
 	deleteComment,
+  getUsers
 };

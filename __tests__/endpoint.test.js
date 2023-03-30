@@ -386,5 +386,36 @@ describe('Delete /api/comments/:comment_id', () => {
   test('400: should return 400 error if use inputs an invalid comment_id', () => {
     return request(app).delete('/api/comments/not_a_num').expect(400);
   });
+});
 
+describe('GET /api/users', () => {
+  test('should return a 200 status code', () => {
+    return request(app).get('/api/users').expect(200);
+  });
+  test('200: return an object', () => {
+		return request(app)
+			.get('/api/users')
+			.then(({ body }) => {
+				expect(typeof body).toBe('object');
+				expect(Array.isArray(body)).toBe(false);
+			});
+	});
+  test('200: should return an array of objects containing users', () => {
+    return request(app)
+			.get('/api/users')
+			.then(({ body }) => {
+				const { users } = body;
+				expect(users).toHaveLength(4);
+				users.forEach((user) => {
+					expect(user).toMatchObject({
+            username: expect.any(String),
+            name: expect.any(String),
+            avatar_url: expect.any(String)
+          })
+				});
+			});
+  });
+  test('should return status code 404 when path is spelt incorrectly', () => {
+		return request(app).get('/api/use').expect(404);
+	});
 });
