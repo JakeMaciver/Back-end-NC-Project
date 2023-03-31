@@ -138,6 +138,60 @@ describe('GET /api/reviews', () => {
   test('404: should return an error 404 when the user has entered an invalid endpoint', () => {
     return request(app).get('/api/revie').expect(404)
   });
+  test('200: should be able to select by category using a query', () => {
+    return request(app).get(
+			'/api/reviews?category=dexterity'
+		).expect(200).then(({body}) => {
+      const {reviews} = body
+      expect(reviews).toHaveLength(1)
+      expect(reviews[0]).toHaveProperty('category', 'dexterity')
+    })
+  });
+  test('200: should be able to sort by a column via query', () => {
+    return request(app)
+			.get('/api/reviews?sort_by=designer')
+			.expect(200)
+			.then(({ body }) => {
+				const { reviews } = body;
+				expect(reviews).toBeSortedBy('designer', {descending : true});
+			});
+  });
+  test('200: should be able to order by via query', () => {
+    return request(app)
+			.get('/api/reviews?sort_by=designer&order=asc')
+			.expect(200)
+			.then(({ body }) => {
+				const { reviews } = body;
+				expect(reviews).toBeSortedBy('designer', { ascending: true });
+			});
+  });
+  test('200: should set default sort by to created_at and default order to desc when passed no queries', () => {
+    return request(app)
+			.get('/api/reviews')
+			.expect(200)
+			.then(({ body }) => {
+				const { reviews } = body;
+				expect(reviews).toBeSortedBy('created_at', { descending: true });
+			});
+  });
+  test('404: should return a 404 error if user tries to query a column that does exist', () => {
+    return request(app).get('/api/reviews?category=edsgh').expect(404)
+  });
+  test('400: should return a 404 error if user enters an order that is not whitelisted', () => {
+		return request(app).get('/api/reviews?order=fshg').expect(400);
+	});
+  test('400: should return a 404 error if user enters a sort_by that is not whitelisted', () => {
+		return request(app).get('/api/reviews?sort_by=fshg').expect(400);
+	});
+  test('404: should return a 404 error when the category exists but there are no reviews associated with it', () => {
+    return request(app)
+			.get("/api/reviews?category=children's games")
+			.expect(200)
+			.then(({ body }) => {
+				const { reviews } = body;
+				expect(reviews).toEqual([]);
+			});
+  });
 });
 
 describe('GET /api/reviews/:review_id/comments', () => {
