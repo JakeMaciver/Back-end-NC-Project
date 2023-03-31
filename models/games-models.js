@@ -34,11 +34,11 @@ async function selectReviews(category, sort_by = 'created_at', order = 'desc') {
 			'comments_count',
 		].includes(sort_by)
 	) {
-		return Promise.reject({ status: 404 });
+		return Promise.reject({ status: 400 });
 	}
 
 	if (!['asc', 'desc'].includes(order)) {
-		return Promise.reject({ status: 404 });
+		return Promise.reject({ status: 400 });
 	}
 
 	let queryByCategory = ``;
@@ -61,7 +61,6 @@ async function selectReviews(category, sort_by = 'created_at', order = 'desc') {
   `;
 
 	const { rows } = await db.query(selectReviewsQuery);
-	if (!rows.length) return Promise.reject({ status: 404 });
 	return rows;
 }
 

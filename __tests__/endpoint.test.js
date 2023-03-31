@@ -177,14 +177,20 @@ describe('GET /api/reviews', () => {
   test('404: should return a 404 error if user tries to query a column that does exist', () => {
     return request(app).get('/api/reviews?category=edsgh').expect(404)
   });
-  test('404: should return a 404 error if user enters an order that is not whitelisted', () => {
-    return request(app).get('/api/reviews?order=fshg').expect(404)
-  });
-  test('404: should return a 404 error if user enters a sort_by that is not whitelisted', () => {
-		return request(app).get('/api/reviews?sort_by=fshg').expect(404);
+  test('400: should return a 404 error if user enters an order that is not whitelisted', () => {
+		return request(app).get('/api/reviews?order=fshg').expect(400);
+	});
+  test('400: should return a 404 error if user enters a sort_by that is not whitelisted', () => {
+		return request(app).get('/api/reviews?sort_by=fshg').expect(400);
 	});
   test('404: should return a 404 error when the category exists but there are no reviews associated with it', () => {
-    return request(app).get("/api/reviews?category=children's games").expect(404)
+    return request(app)
+			.get("/api/reviews?category=children's games")
+			.expect(200)
+			.then(({ body }) => {
+				const { reviews } = body;
+				expect(reviews).toEqual([]);
+			});
   });
 });
 
