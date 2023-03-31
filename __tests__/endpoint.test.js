@@ -86,7 +86,17 @@ describe('GET /api/reviews/:review_id', () => {
       expect(body).toEqual({message: 'Not found'})
     })
   });
+  test('200: should add feature to also return the comment count of each review', () => {
+		return request(app)
+			.get('/api/reviews/3')
+			.expect(200)
+			.then(({ body }) => {
+				const { review } = body;
+				expect(review[0]).toHaveProperty('comment_count', '3');
+			});
+	});
 });
+
 
 describe('GET /api/reviews', () => {
 	test('should return a status code 200', () => {

@@ -11,8 +11,11 @@ const selectCategories = () => {
 
 const selectReviewByID = (review_id) => {
 	const selectReviewByIDQuery = `
-    SELECT * FROM reviews 
-    WHERE review_id = $1;
+    SELECT reviews.*, COUNT (comments.comment_id) AS comment_count
+    FROM reviews
+    Left JOIN comments ON reviews.review_id = comments.review_id 
+    WHERE reviews.review_id = $1
+    GROUP BY reviews.review_id;
   `;
 	return db.query(selectReviewByIDQuery, [review_id]).then((review) => {
 		if (review.rowCount === 0) return Promise.reject({ status: 404 });
