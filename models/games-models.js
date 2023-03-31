@@ -1,6 +1,5 @@
 const db = require('../db/connection');
 const {checkExists} = require('../db/seeds/utils');
-const {readFile} = require('fs/promises');
 
 const selectCategories = () => {
   const selectCategoriesQuery = `
@@ -170,11 +169,6 @@ const selectUsers = async () => {
 	return rows;
 };
 
-const selectApi = async () => {
-  const endpoints = await readFile(`/${__dirname}/../endpoints.json`, {encoding: 'utf-8'})
-  return endpoints;
-}
-
 module.exports = {
 	selectCategories,
 	selectReviewByID,
@@ -184,5 +178,4 @@ module.exports = {
   updateReview,
   removeCommentById,
   selectUsers,
-  selectApi
 };
