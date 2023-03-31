@@ -177,5 +177,5 @@ module.exports = {
 	insertCommentById,
   updateReview,
   removeCommentById,
-  selectUsers
+  selectUsers,
 };

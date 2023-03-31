@@ -1,4 +1,5 @@
 const users = require('../db/data/test-data/users');
+const { readFile } = require('fs/promises');
 const {
 	selectCategories,
 	selectReviewByID,
@@ -7,7 +8,7 @@ const {
   insertCommentById,
   updateReview,
   removeCommentById,
-  selectUsers
+  selectUsers,
 } = require('../models/games-models');
 
 const getCategories = (req, res, next) => {
@@ -90,6 +91,12 @@ const getUsers = (req, res, next) => {
   }).catch(err => next(err));
 }
 
+const getApi = async (req, res, next) => {
+  const endpoints = await readFile(`/${__dirname}/../endpoints.json`, {encoding: 'utf-8'})
+  res.status(200).send(endpoints);
+
+}
+
 module.exports = {
 	getCategories,
 	getReviewByID,
@@ -98,5 +105,6 @@ module.exports = {
 	postCommentById,
 	patchReview,
 	deleteComment,
-  getUsers
+  getUsers,
+  getApi
 };
