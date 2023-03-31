@@ -7,7 +7,8 @@ const {
   insertCommentById,
   updateReview,
   removeCommentById,
-  selectUsers
+  selectUsers,
+  selectApi
 } = require('../models/games-models');
 
 const getCategories = (req, res, next) => {
@@ -90,6 +91,12 @@ const getUsers = (req, res, next) => {
   }).catch(err => next(err));
 }
 
+const getApi = (req, res, next) => {
+  selectApi().then((endpoints) => {
+    res.status(200).send(endpoints);
+  })
+}
+
 module.exports = {
 	getCategories,
 	getReviewByID,
@@ -98,5 +105,6 @@ module.exports = {
 	postCommentById,
 	patchReview,
 	deleteComment,
-  getUsers
+  getUsers,
+  getApi
 };

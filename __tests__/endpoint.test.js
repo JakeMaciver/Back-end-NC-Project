@@ -483,3 +483,23 @@ describe('GET /api/users', () => {
 		return request(app).get('/api/use').expect(404);
 	});
 });
+
+describe('GET /api', () => {
+  test('should return a status code 200', () => {
+    return request(app).get('/api').expect(200);
+  });
+  test('200: should return JSON describing all the endpoints in the api', () => {
+    return request(app).get('/api').expect(200).then(({text}) => {
+      text = JSON.parse(text);
+      expect(text).toHaveProperty("GET /api")
+      expect(text).toHaveProperty('GET /api/categories');
+      expect(text).toHaveProperty('GET /api/reviews');
+      expect(text).toHaveProperty('GET /api/reviews/:review_id');
+      expect(text).toHaveProperty('GET /api/reviews/:review_id/comments');
+      expect(text).toHaveProperty('POST /api/reviews/:review_id/comments');
+      expect(text).toHaveProperty('PATCH /api/reviews/:review_id');
+      expect(text).toHaveProperty('DELETE /api/comments/:comment_id');
+      expect(text).toHaveProperty('GET /api/users');
+    })
+  });
+});
