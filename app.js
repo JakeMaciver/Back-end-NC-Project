@@ -11,8 +11,11 @@ const {
   getApi
 } = require('./controllers/games-controllers');
 const {handle500statusErrors, handle404statusErrors, handle400statusErrors} = require('./controllers/error-handling-controllers');
+const cors = require('cors');
 
 const app = express();
+
+app.use(cors());
 
 app.use(express.json());
 
