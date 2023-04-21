@@ -34,7 +34,7 @@ async function selectReviews(category, sort_by = 'created_at', order = 'desc') {
 			'created_at',
 			'votes',
 			'designer',
-			'comments_count',
+			'comment_count',
 		].includes(sort_by)
 	) {
 		return Promise.reject({ status: 400 });
