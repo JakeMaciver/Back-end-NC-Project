@@ -1,19 +1,59 @@
-# Northcoders House of Games API
+<div align="center">
 
-## Background
+# Back-End-Board-Games-API
 
-We will be building an API for the purpose of accessing application data programmatically. The intention here is to mimic the building of a real world backend service (such as reddit) which should provide this information to the front end architecture.
+</div>
 
-The database used will be PSQL, and will interact with it using [node-postgres](https://node-postgres.com/).
+## Description
+
+This project is a RESTful API created using Node.js, Express.js, and PostgreSQL. The API provides endpoints for making GET, POST, PATCH, and DELETE requests. The database was created using PostgreSQL and seeded with test data. The project uses Jest for testing and Supertest for endpoint testing. Kanban Trello boards were used for ticket tracking. The API is hosted using ElephantSQL and Render.
 
 ## Kanban
 
 ## https://trello.com/b/jdYmok2t/northcoders-be-games-portfolio-project
 
-To keep track of the tasks involved in this project we're going to use a kanban board. You can click on the ticket to find out more information about what is required for the feature. A ticket is not considered complete unless both the happy path and errors response are handled. 
+## Tech Stack
 
-## .env setup
+- Node.js
+- Express.js
+- PostgreSQL
 
-If you want to clone and run this project locally you will need to create the relevant .env files. To do this create a file with the name .env.<"database-data">. in the files you will want to assign a value to the global environment variable by including this "PGDATABASE=<"database-name">".
+## Installation
+
+1. Clone the repository.
+2. Run `npm install`.
+3. Create a `.env.<database-data>` file and add the following:
+
+```
+DATABASE_URL=<your-database-url>
+```
+
+4. Run the following commands:
+
+```
+npm run setup-dbs
+npm run seed
+```
+
+5. Start the server using `npm run start`.
+
+## Usage
+
+To use the API, make HTTP requests to the appropriate endpoints. Here are the available endpoints:
+
+- `GET /api/reviews`: Returns a list of all reviews.
+- `POST /api/reviews/:review_id/comments`: Post a new comment to the specified review.
+- `PATCH /api/reviews/:review_id`: Updates an existing reviews votes.
+- `DELETE /api/comments/:comment_id`: Deletes an existing comment.
+
+for more endpoints take a took in the ```endpoints.json``` file.
+
+## Testing
+
+The API uses Jest for testing and Supertest for endpoint testing. To run the tests, use the command `npm test`.
+
+
+
+
 
 
